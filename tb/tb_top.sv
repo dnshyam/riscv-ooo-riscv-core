@@ -167,5 +167,14 @@ module tb_top;
         $display("=== Speculative Out-of-Order Verification Cycle Sequence Complete! ===");
         $finish;
     end
+    // FIXED: Standard double-slash comment block to prevent Verilator confusion
+    // Waveform simulation hook
+    initial begin
+        if ($test$plusargs("trace") != 0) begin
+            $dumpfile("waveform.vcd");
+            $dumpvars(0, tb_top);
+        end
+    end
 
 endmodule
+

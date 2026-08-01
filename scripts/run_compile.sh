@@ -3,10 +3,10 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-echo "=== Compiling RISC-V OoO Design ==="
+echo "=== Compiling RISC-V OoO Design with Waveform Support ==="
 
-# Added -j 0 flag to let Verilator use all available CPU cores for compiling C++ files
-verilator --binary -j 0 \
+# Added --trace flag and appended tb/sim_main.cpp driving file entry point
+verilator --binary -j 0 --trace \
   -Wall \
   -Wno-UNUSEDSIGNAL \
   -Wno-UNUSEDPARAM \
@@ -32,8 +32,10 @@ verilator --binary -j 0 \
   rtl/memory/l1_dcache.sv \
   rtl/memory/l2_coherent_cache.sv \
   rtl/core/pipeline_top.sv \
-  tb/tb_top.sv
+  tb/tb_top.sv \
+  tb/sim_main.cpp
 
 echo "=== Compilation and Build Process Complete ==="
 echo "=== Running Generated Out-of-Order Core Executable ==="
-./obj_dir/Vtb_top
+./obj_dir/Vtb_top +trace
+echo "=== Waveform File Created: waveform.vcd ==="
