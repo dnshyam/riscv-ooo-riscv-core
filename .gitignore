@@ -1,0 +1,9 @@
+# Verilator artifacts
+obj_dir/
+*.log
+*.vcd
+*.vfast
+
+# OS specific files
+.DS_Store
+Thumbs.db
