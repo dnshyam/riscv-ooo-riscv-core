@@ -164,17 +164,19 @@ module tb_top;
         // Execute structural run cycle windows
         #500;
         
+        $display("\n=======================================================");
+        $display("===    MICROARCHITECTURAL PERFORMANCE DASHBOARD     ===");
+        $display("=======================================================");
+        $display(" Total Simulation Cycles : %0d", u_pipeline_top.hpm_cycles);
+        $display(" Instructions Retired    : %0d", u_pipeline_top.hpm_inst_retired);
+        $display(" TAGE Predictor Flushes  : %0d", u_pipeline_top.hpm_bpu_mispredicts);
+        $display(" Pipeline Structural Stalls: %0d", u_pipeline_top.hpm_pipeline_stalls);
+        $display("=======================================================\n");
+
         $display("=== Speculative Out-of-Order Verification Cycle Sequence Complete! ===");
         $finish;
     end
-    // FIXED: Standard double-slash comment block to prevent Verilator confusion
-    // Waveform simulation hook
-    initial begin
-        if ($test$plusargs("trace") != 0) begin
-            $dumpfile("waveform.vcd");
-            $dumpvars(0, tb_top);
-        end
-    end
 
 endmodule
+
 

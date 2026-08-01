@@ -55,6 +55,47 @@ The automated shell script leverages multi-core compilation configurations to tr
 chmod +x scripts/run_compile.sh
 ./scripts/run_compile.sh
 ```
+## 🗺️ Microarchitectural Pipeline Mapping
+
+```text
+       [ Fetch Stage ] ──► [ TAGE Branch Predictor ]
+              │
+              ▼
+       [ Decode Stage ] ──► ( RV32I Parsing Logic )
+              │
+              ▼
+       [ Rename Stage ] ──► [ Register Map Table ] ──► ( Allocation Free List )
+              │
+              ▼
+      [ Dispatch Stage ] ──► [ Reorder Buffer (ROB) ]
+              │
+              ▼
+       [ Issue Queue ] ◄──► [ Physical Register File (PRF) ]
+        (Wakeup/Select)
+              │
+              ▼
+      ┌─────────────────────────┴────────────────────────┐
+      ▼                                                  ▼
+[ ALU Execution Unit ]                         [ Load/Store Queue (LSQ) ]
+      │                                                  │
+      ▼                                                  ▼
+( Broadcast Wakeup Tag )                       [ L1 Write-Through Cache ]
+      │                                                  │
+      └─────────────────────────┬────────────────────────┘
+                                ▼
+                     [ Coherent L2 Cache Controller ]
+```
+
+### Speculative Execution Mapping Interconnects
+
+| Pipeline Stage | Structural Constraints Mapped | Speculative Hazards Resolved | Dynamic Recovery Action |
+| :--- | :--- | :--- | :--- |
+| **Fetch** | Instruction Cache Miss | Control Flow Branches | Branch Target Buffer Redirect |
+| **Rename**| Free List Depletion Stall | WAR / WAW False Overwrites | Architectural Map Rolling |
+| **Dispatch**| ROB Capacity Limit Stall | In-Order Allocation Tracking | Structural Backpressure |
+| **Issue** | Out-of-Order Execution | RAW Valid Data Dependencies | Broadcast Tag Wakeup Matrix |
+| **Commit**| In-Order State Retirement | Dynamic Timing Exceptions | Speculative Pipeline Flush |
+
 
 ### Sample Simulation Retirement Traces
 Upon successful execution paths, the Reorder Buffer cleanly tracks speculative state commitments and outputs retirement validation data:

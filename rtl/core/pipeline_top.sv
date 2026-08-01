@@ -69,6 +69,26 @@ import riscv_pkg::*;
     logic [ROB_INDEX_BITS-1:0] lsq_wb_rob_id;
     logic [XLEN-1:0]           lsq_wb_data;
 
+    // === Hardware Performance Counters (HPM) ===
+    logic [63:0] hpm_cycles;
+    logic [63:0] hpm_inst_retired;
+    logic [63:0] hpm_bpu_mispredicts;
+    logic [63:0] hpm_pipeline_stalls;
+
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            hpm_cycles           <= '0;
+            hpm_inst_retired     <= '0;
+            hpm_bpu_mispredicts  <= '0;
+            hpm_pipeline_stalls  <= '0;
+        end else begin
+            hpm_cycles <= hpm_cycles + 1'b1;
+            if (commit_evt_valid) hpm_inst_retired <= hpm_inst_retired + 1'b1;
+            if (flush_pipeline)    hpm_bpu_mispredicts <= hpm_bpu_mispredicts + 1'b1;
+            if (stall_pipeline)    hpm_pipeline_stalls <= hpm_pipeline_stalls + 1'b1;
+        end
+    end
+
     // Structural Hazard Evaluator Logic for Stall Activations
     assign stall_pipeline     = rob_structure_full || iq_structure_full || rename_alloc_stall || lsq_structure_full;
     assign decode_valid       = fetch_to_decode.valid && !stall_pipeline;

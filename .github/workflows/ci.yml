@@ -1,0 +1,25 @@
+name: RISC-V OoO Core Verification CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Hardware Repository Sources
+      uses: actions/checkout@v4
+
+    - name: Install Build Essentials and Verilator
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential verilator
+
+    - name: Execute Multi-Core Verification Testbench Pipeline
+      run: |
+        chmod +x scripts/run_compile.sh
+        ./scripts/run_compile.sh
