@@ -1,3 +1,4 @@
+![RISC-V OoO Core Verification CI](https://github.com. Cartwright.svg)
 # Speculative Out-of-Order RISC-V Processor Core
 An advanced, speculative Out-of-Order (OoO) RISC-V processor core featuring a geometric TAGE Branch Predictor and an L2 Cache Coherency subsystem. Built with SystemVerilog and verified using Verilator.
 
